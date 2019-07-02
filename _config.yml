@@ -17,8 +17,8 @@ title: 夏鹏的博客
 email: 411602796@qq.com
 description: >- # this means to ignore newlines until "baseurl:"
   没事瞎折腾
-baseurl: "" # the subpath of your site, e.g. /blog
-url: "" # the base hostname & protocol for your site, e.g. http://example.com
+baseurl: "/" # the subpath of your site, e.g. /blog
+url: "http://wsznd.com" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: 
 github_username:  xiagit000
 
