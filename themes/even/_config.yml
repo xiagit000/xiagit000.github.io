@@ -3,7 +3,7 @@
 # ===========================================
 
 # Site creation time
-since: 2015
+since: 2019
 
 # Custom your favicon.ico in `site/source`
 favicon: /favicon.ico
@@ -18,9 +18,9 @@ rss: default
 # ===========================================
 menu:
   Home: /
-  # Archives: /archives/
-  # Tags: /tags/
-  # Categories: /categories/
+  Archives: /archives/
+  Tags: /tags/
+  Categories: /categories/
   # About: /about/
 
 # ===========================================
@@ -43,7 +43,7 @@ pjax: true
 latex: false
 
 copyright:
-  enable: true
+  enable: false
   # https://creativecommons.org/
   license: '<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>'
 
@@ -57,15 +57,15 @@ reward:
 # Social links Settings
 # ===========================================
 social:
-  email: your@email.com
+  email: 411602796@qq.com
   stack-overflow:
   twitter:
   facebook:
   linkedin:
-  google:
-  github: https://github.com/ahonn
+  google: xiagg000@gmail.com
+  github: https://github.com/xiagit000
   weibo:
-  zhihu:
+  zhihu: 
   douban:
   pocket:
   tumblr:
@@ -81,7 +81,7 @@ leancloud:
   app_key:
 
 # Baidu Analytics
-baidu_analytics:
+baidu_analytics: c8c1c6553dff0eca2d97668e1f454b81
 # Baidu Verification
 baidu_verification:
 
@@ -99,7 +99,7 @@ changyan:
   appkey:
 
 #LiveRe
-livere_datauid:
+livere_datauid: MTAyMC80NTIyNS8yMTc0MA==
 
 # ===========================================
 # Version
