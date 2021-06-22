@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang>
+  <head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="description" content="Spring boot整合jooq"><meta name="keywords" content="java spring 分布式 php 程序员"><link rel="alternate" href="/atom.xml" title="夏鹏的博客"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.11.0">
+<link rel="canonical" href="https://wsznd.com/2019/07/25/spring-boot整合jooq/">
+
+<link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css"><link rel="stylesheet" type="text/css" href="/lib/nprogress/nprogress.min.css">
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.11.0">
+
+<script id="baidu_analytics">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?c8c1c6553dff0eca2d97668e1f454b81";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script><script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<script>
+  window.config = {"leancloud":{"app_id":null,"app_key":null},"toc":true,"fancybox":true,"pjax":true,"latex":false};
+</script>
+
+    <title>Spring boot整合jooq - 夏鹏的博客</title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">夏鹏的博客</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list"><a href="/">
+        <li class="mobile-menu-item">首页
+          </li>
+      </a><a href="/archives/">
+        <li class="mobile-menu-item">归档
+          </li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签
+          </li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类
+          </li>
+      </a></ul>
+</nav>
+<div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">夏鹏的博客</a>
+</div>
+
+<nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item">
+          <a class="menu-item-link" href="/">
+            首页
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            归档
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/tags/">
+            标签
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/categories/">
+            分类
+            </a>
+        </li>
+      </ul></nav>
+</header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content"><article class="post">
+    <header class="post-header">
+      <h1 class="post-title">Spring boot整合jooq
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2019-07-25
+        </span><span class="post-category">
+            <a href="/categories/java/">java</a>
+            <a href="/categories/java/spring/">spring</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#依赖-amp-配置"><span class="toc-text">依赖&amp;配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#pom-xml"><span class="toc-text">pom.xml</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#application-yml"><span class="toc-text">application.yml</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#生成代码"><span class="toc-text">生成代码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用方法"><span class="toc-text">使用方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#实体"><span class="toc-text">实体</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#dao层的用法"><span class="toc-text">dao层的用法</span></a></li></ol></li></ol>
+    </div>
+  </div><div class="post-content"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近使用spring cloud做分布式应用的开发，底层准备采用jooq做持久层，因为都是单应用，相互之间没有代码上的耦合，所以没有严格按照三层的设计模式来开发，这个时候jooq的代码生成工具就能极大地提升应用的开发效率，整合的过程中发现网上的帖子要么太过简单，要么言语不详，并没有讲清楚具体的开发细节，所以自己完整的记录一下使用过程。</p>
+<a id="more"></a>
+
+<blockquote>
+<p>本教程依赖于spring boot框架，spring boot的配置与搭建在这里不做赘述</p>
+</blockquote>
+<h2 id="依赖-amp-配置"><a href="#依赖-amp-配置" class="headerlink" title="依赖&amp;配置"></a>依赖&amp;配置</h2><h3 id="pom-xml"><a href="#pom-xml" class="headerlink" title="pom.xml"></a>pom.xml</h3><p>引入jooq的依赖</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"></span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;spring-boot-starter-jooq&lt;/artifactId&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.jooq&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;jooq-meta&lt;/artifactId&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.jooq&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;jooq-codegen&lt;/artifactId&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;mysql&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;</span><br><span class="line">    &lt;scope&gt;runtime&lt;/scope&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">&lt;build&gt;</span><br><span class="line">    &lt;plugins&gt;</span><br><span class="line">        /*用于读取yml配置属性的插件*/</span><br><span class="line">        &lt;plugin&gt;</span><br><span class="line">            &lt;groupId&gt;it.ozimov&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;yaml-properties-maven-plugin&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;1.1.3&lt;/version&gt;</span><br><span class="line">            &lt;executions&gt;</span><br><span class="line">                &lt;execution&gt;</span><br><span class="line">                    &lt;phase&gt;initialize&lt;/phase&gt;</span><br><span class="line">                    &lt;goals&gt;</span><br><span class="line">                        &lt;goal&gt;<span class="built_in">read</span>-project-properties&lt;/goal&gt;</span><br><span class="line">                    &lt;/goals&gt;</span><br><span class="line">                    &lt;configuration&gt;</span><br><span class="line">                        &lt;files&gt;</span><br><span class="line">                            &lt;file&gt;src/main/resources/application.yml&lt;/file&gt;</span><br><span class="line">                        &lt;/files&gt;</span><br><span class="line">                    &lt;/configuration&gt;</span><br><span class="line">                &lt;/execution&gt;</span><br><span class="line">            &lt;/executions&gt;</span><br><span class="line">        &lt;/plugin&gt;</span><br><span class="line">	</span><br><span class="line">        /*jooq的配置插件*/</span><br><span class="line">        &lt;plugin&gt;</span><br><span class="line">            &lt;groupId&gt;org.jooq&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;jooq-codegen-maven&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;<span class="variable">$&#123;jooq.version&#125;</span>&lt;/version&gt;</span><br><span class="line">            &lt;executions&gt;</span><br><span class="line">                &lt;execution&gt;</span><br><span class="line">                    &lt;goals&gt;</span><br><span class="line">                        &lt;goal&gt;generate&lt;/goal&gt;</span><br><span class="line">                    &lt;/goals&gt;</span><br><span class="line">                &lt;/execution&gt;</span><br><span class="line">            &lt;/executions&gt;</span><br><span class="line">            &lt;configuration&gt;</span><br><span class="line">                &lt;jdbc&gt;</span><br><span class="line">                    &lt;driver&gt;<span class="variable">$&#123;spring.datasource.driver-class-name&#125;</span>&lt;/driver&gt;</span><br><span class="line">                    &lt;url&gt;<span class="variable">$&#123;spring.datasource.url&#125;</span>&lt;/url&gt;</span><br><span class="line">                    &lt;user&gt;<span class="variable">$&#123;spring.datasource.username&#125;</span>&lt;/user&gt;</span><br><span class="line">                    &lt;password&gt;<span class="variable">$&#123;spring.datasource.password&#125;</span>&lt;/password&gt;</span><br><span class="line">                &lt;/jdbc&gt;</span><br><span class="line">                &lt;generator&gt;</span><br><span class="line">                    &lt;name&gt;org.jooq.util.DefaultGenerator&lt;/name&gt;</span><br><span class="line">                    &lt;database&gt;</span><br><span class="line">                        &lt;name&gt;org.jooq.util.mysql.MySQLDatabase&lt;/name&gt;</span><br><span class="line">                        &lt;includes /&gt;</span><br><span class="line">                        &lt;inputSchema&gt;<span class="variable">$&#123;my.datasource.schema&#125;</span>&lt;/inputSchema&gt;</span><br><span class="line">                    &lt;/database&gt;</span><br><span class="line">                    &lt;generate&gt;</span><br><span class="line">                        &lt;daos&gt;<span class="literal">true</span>&lt;/daos&gt;</span><br><span class="line">                        &lt;pojos&gt;<span class="literal">true</span>&lt;/pojos&gt;</span><br><span class="line">                        &lt;javaTimeTypes&gt;<span class="literal">true</span>&lt;/javaTimeTypes&gt;</span><br><span class="line">                    &lt;/generate&gt;</span><br><span class="line">                    &lt;target&gt;</span><br><span class="line">                        &lt;packageName&gt;your package name&lt;/packageName&gt;</span><br><span class="line">                        &lt;directory&gt;target dir <span class="keyword">for</span> your code generated&lt;/directory&gt;</span><br><span class="line">                    &lt;/target&gt;</span><br><span class="line">                &lt;/generator&gt;</span><br><span class="line">            &lt;/configuration&gt;</span><br><span class="line">        &lt;/plugin&gt;</span><br><span class="line">    &lt;/plugins&gt;</span><br><span class="line">&lt;/build&gt;</span><br><span class="line"></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<h3 id="application-yml"><a href="#application-yml" class="headerlink" title="application.yml"></a>application.yml</h3><p>相关的配置如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">spring:</span><br><span class="line">  datasource:</span><br><span class="line">    url: &#123;&#123;your database url&#125;&#125;</span><br><span class="line">    username: &#123;&#123;your username&#125;&#125;</span><br><span class="line">    password: &#123;&#123;your password&#125;&#125;</span><br><span class="line">    driver-class-name: com.mysql.jdbc.Driver</span><br><span class="line">  jooq:</span><br><span class="line">    sql-dialect: mysql</span><br><span class="line"></span><br><span class="line">my:</span><br><span class="line">  datasource:</span><br><span class="line">    schema: &#123;&#123;your database schema&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>至此jooq的基本配置已经完成。</p>
+<h2 id="生成代码"><a href="#生成代码" class="headerlink" title="生成代码"></a>生成代码</h2><p>这个时候就需要我们在数据库里面创建业务表，完成以后执行mvn compile命令jooq自动进行逆向操作，根据刚创建的数据表生成java代码。<br>生成完成的代码结构如图：</p>
+<img src="/2019/07/25/spring-boot整合jooq/1.png">
+<p>生成的代码包含数据库对应的实体，查询映射，还有dao层工具。</p>
+<h2 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h2><h3 id="实体"><a href="#实体" class="headerlink" title="实体"></a>实体</h3><p>按照jooq的基本用法即可，省去了自己手动创建标准对象类的功夫，但是有个弊端就是jooq生成的代码，你是无法改动的，因为下一次使用maven编译的时候会将所有生成的代码进行覆盖，因此如果需要对jooq生成的对象做改动，尽量灵活使用继承，组合的方式进行增强。</p>
+<h3 id="dao层的用法"><a href="#dao层的用法" class="headerlink" title="dao层的用法"></a>dao层的用法</h3><p>jooq生成的dao层提供了很多查询方法，但这些方法对于我们某些业务来说肯定是远远不够的，这就要求我们必须在此基础上添加自定的dao方法，既可以享受jooq已经生成的方法的便利，又可以自定义特定的数据库操作，一举多得。<br>首先我们要自定义一个自己的dao类继承jooq生成的dao类，作为增强类，同时还要把spring已经实例化的jooq configuration注入到父类里面，这样通过增强类去调用继承的方法时，才能正常查询，否则jooq生成的dao类会因为无法获取正确的配置实例而报空指针错误，示例：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">@Repository</span><br><span class="line">public class UserDaoExt extends UsersDao implements BaseDao &#123;</span><br><span class="line"></span><br><span class="line">    @Autowired</span><br><span class="line">    private DSLContext create;</span><br><span class="line"></span><br><span class="line">    /*讲spring托管的jooq配置注入到继承的父类当中*/</span><br><span class="line">    @Autowired</span><br><span class="line">    public UserDaoExt(Configuration configuration) &#123;</span><br><span class="line">        super(configuration);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line">    根据业务需要添加自定义的数据库操作函数</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>至此jooq的整合就已经基本完成，再往上层调用就跟传统的使用方式一样，不需要再关注持久层的实现。</p>
+
+      </div>
+      
+      <footer class="post-footer">
+        <div class="post-tags">
+            <a href="/tags/java/">java</a>
+            <a href="/tags/spring/">spring</a>
+            <a href="/tags/jooq/">jooq</a>
+            </div>
+        
+        <nav class="post-nav"><a class="prev" href="/2019/08/12/spring-restdocs使用指南/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">Spring Restdocs使用指南</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    <a class="next" href="/2019/07/10/maven常用命令/">
+        <span class="next-text nav-default">Maven3 常用命令</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav></footer>
+    </article></div><div class="comments" id="comments"><div id="lv-container" data-id="city" data-uid="MTAyMC80NTIyNS8yMTc0MA==">
+        <noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+      </div>  
+    </div></div>
+      </main>
+
+      <footer id="footer" class="footer"><div class="social-links"><a href="mailto:411602796@qq.com" class="iconfont icon-email" title="email"></a>
+        <a href="/xiagg000@gmail.com" class="iconfont icon-google" title="google"></a>
+        <a href="https://github.com/xiagit000" class="iconfont icon-github" title="github"></a>
+        <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    </div><div class="copyright">
+
+  <span class="copyright-year">&copy;2019 - 2021<span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">夏鹏</span>
+  </span>
+</div>
+</footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div><script type="text/javascript">
+	(function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+  </script><script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/lib/pjax/jquery.pjax.min.js"></script>
+  <script type="text/javascript" src="/lib/nprogress/nprogress.min.js"></script>
+  <script type="text/javascript" src="/js/src/even.js?v=2.11.0"></script>
+</body>
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang>
+  <head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="description" content="Maven3 常用命令"><meta name="keywords" content="java spring 分布式 php 程序员"><link rel="alternate" href="/atom.xml" title="夏鹏的博客"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.11.0">
+<link rel="canonical" href="https://wsznd.com/2019/07/10/maven常用命令/">
+
+<link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css"><link rel="stylesheet" type="text/css" href="/lib/nprogress/nprogress.min.css">
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.11.0">
+
+<script id="baidu_analytics">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?c8c1c6553dff0eca2d97668e1f454b81";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script><script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<script>
+  window.config = {"leancloud":{"app_id":null,"app_key":null},"toc":true,"fancybox":true,"pjax":true,"latex":false};
+</script>
+
+    <title>Maven3 常用命令 - 夏鹏的博客</title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">夏鹏的博客</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list"><a href="/">
+        <li class="mobile-menu-item">首页
+          </li>
+      </a><a href="/archives/">
+        <li class="mobile-menu-item">归档
+          </li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签
+          </li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类
+          </li>
+      </a></ul>
+</nav>
+<div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">夏鹏的博客</a>
+</div>
+
+<nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item">
+          <a class="menu-item-link" href="/">
+            首页
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            归档
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/tags/">
+            标签
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/categories/">
+            分类
+            </a>
+        </li>
+      </ul></nav>
+</header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content"><article class="post">
+    <header class="post-header">
+      <h1 class="post-title">Maven3 常用命令
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2019-07-10
+        </span><span class="post-category">
+            <a href="/categories/java/">java</a>
+            <a href="/categories/java/maven/">maven</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-创建项目"><span class="toc-text">1. 创建项目</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-编译源代码"><span class="toc-text">2. 编译源代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-编译测试源代码"><span class="toc-text">3. 编译测试源代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-清空"><span class="toc-text">4. 清空</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-测试"><span class="toc-text">5. 测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-生成站点目录并打包"><span class="toc-text">6. 生成站点目录并打包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-安装应用到本地仓库"><span class="toc-text">7. 安装应用到本地仓库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-打包"><span class="toc-text">8. 打包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-打jar包"><span class="toc-text">9. 打jar包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-生成eclipse项目"><span class="toc-text">10. 生成eclipse项目</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#11-帮助信息"><span class="toc-text">11. 帮助信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#12-查看项目类型"><span class="toc-text">12. 查看项目类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#13-获取当前项目的版本号并输出到指定文件中"><span class="toc-text">13. 获取当前项目的版本号并输出到指定文件中</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#14-自动升级项目版本号"><span class="toc-text">14. 自动升级项目版本号</span></a></li></ol>
+    </div>
+  </div><div class="post-content"><h3 id="1-创建项目"><a href="#1-创建项目" class="headerlink" title="1. 创建项目"></a>1. 创建项目</h3><p>命令格式：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mvn archetype:generate 固定格式</span><br><span class="line">-DgroupId　组织标识（包名）</span><br><span class="line">-DartifactId　项目名称</span><br><span class="line">-DarchetypeArtifactId 指定ArchetypeId，maven-archetype-quickstart，创建一个Java Project；</span><br><span class="line">	maven-archetype-webapp，创建一个Web Project</span><br><span class="line">-DinteractiveMode　是否使用交互模式</span><br><span class="line">-DarchetypeCatalog=<span class="built_in">local</span> 离线模式</span><br></pre></td></tr></table></figure>
+
+<a id="more"></a>
+
+<p>创建标准应用</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mvn archetype:generate -DgroupId=com.mycompany.app -DartifactId=my-app </span><br><span class="line">-DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=<span class="literal">false</span> -DarchetypeCatalog=<span class="built_in">local</span></span><br></pre></td></tr></table></figure>
+
+<p>创建web应用</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mvn archetype:generate -DgroupId=com.mycompany.app -DartifactId=my-web-app </span><br><span class="line">-DarchetypeArtifactId=maven-archetype-webapp -DinteractiveMode=<span class="literal">false</span> -DarchetypeCatalog=<span class="built_in">local</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-编译源代码"><a href="#2-编译源代码" class="headerlink" title="2. 编译源代码"></a>2. 编译源代码</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mvn compile</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-编译测试源代码"><a href="#3-编译测试源代码" class="headerlink" title="3. 编译测试源代码"></a>3. 编译测试源代码</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mvn <span class="built_in">test</span>-compile</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-清空"><a href="#4-清空" class="headerlink" title="4. 清空"></a>4. 清空</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mvn clean</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-测试"><a href="#5-测试" class="headerlink" title="5. 测试"></a>5. 测试</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mvn <span class="built_in">test</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="6-生成站点目录并打包"><a href="#6-生成站点目录并打包" class="headerlink" title="6. 生成站点目录并打包"></a>6. 生成站点目录并打包</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mvn site-deploy</span><br></pre></td></tr></table></figure>
+
+<h3 id="7-安装应用到本地仓库"><a href="#7-安装应用到本地仓库" class="headerlink" title="7. 安装应用到本地仓库"></a>7. 安装应用到本地仓库</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mvn install</span><br></pre></td></tr></table></figure>
+
+<h3 id="8-打包"><a href="#8-打包" class="headerlink" title="8. 打包"></a>8. 打包</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mvn package</span><br></pre></td></tr></table></figure>
+
+<h3 id="9-打jar包"><a href="#9-打jar包" class="headerlink" title="9. 打jar包"></a>9. 打jar包</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mvn jar:jar</span><br></pre></td></tr></table></figure>
+
+<h3 id="10-生成eclipse项目"><a href="#10-生成eclipse项目" class="headerlink" title="10. 生成eclipse项目"></a>10. 生成eclipse项目</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mvn eclipse:eclipse</span><br></pre></td></tr></table></figure>
+
+<h3 id="11-帮助信息"><a href="#11-帮助信息" class="headerlink" title="11. 帮助信息"></a>11. 帮助信息</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mvn <span class="built_in">help</span>:<span class="built_in">help</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="12-查看项目类型"><a href="#12-查看项目类型" class="headerlink" title="12. 查看项目类型"></a>12. 查看项目类型</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mvn archetype:generate -DarchetypeCatalog=intrenal</span><br></pre></td></tr></table></figure>
+
+<h3 id="13-获取当前项目的版本号并输出到指定文件中"><a href="#13-获取当前项目的版本号并输出到指定文件中" class="headerlink" title="13. 获取当前项目的版本号并输出到指定文件中"></a>13. 获取当前项目的版本号并输出到指定文件中</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mvn org.apache.maven.plugins:maven-help-plugin:3.1.0:evaluate -Dexpression=project.version -q -DforceStdout &gt; version</span><br></pre></td></tr></table></figure>
+
+<h3 id="14-自动升级项目版本号"><a href="#14-自动升级项目版本号" class="headerlink" title="14. 自动升级项目版本号"></a>14. 自动升级项目版本号</h3><p>该命令适用于自动化的脚本当中，譬如项目当前版本号为1.0.0-snapshot，执行该命令后最小数位的版本号会自动加1变为1.0.1-snapshot，如果版本号有任意多个位数，按照下例中的格式创建即可。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mvn </span><br><span class="line">build-helper:parse-version //构建版本号的插件</span><br><span class="line">versions:<span class="built_in">set</span> //mvn-release插件</span><br><span class="line">-DnewVersion=<span class="variable">$&#123;parsedVersion.majorVersion&#125;</span>.<span class="variable">$&#123;parsedVersion.minorVersion&#125;</span>.<span class="variable">$&#123;parsedVersion.nextIncrementalVersion&#125;</span>-SNAPSHOT //版本号创建规则</span><br><span class="line">versions:commit //提交当前修改</span><br></pre></td></tr></table></figure>
+      </div>
+      
+      <footer class="post-footer">
+        <div class="post-tags">
+            <a href="/tags/maven/">maven</a>
+            </div>
+        
+        <nav class="post-nav"><a class="prev" href="/2019/07/25/spring-boot整合jooq/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">Spring boot整合jooq</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    </nav></footer>
+    </article></div><div class="comments" id="comments"><div id="lv-container" data-id="city" data-uid="MTAyMC80NTIyNS8yMTc0MA==">
+        <noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+      </div>  
+    </div></div>
+      </main>
+
+      <footer id="footer" class="footer"><div class="social-links"><a href="mailto:411602796@qq.com" class="iconfont icon-email" title="email"></a>
+        <a href="/xiagg000@gmail.com" class="iconfont icon-google" title="google"></a>
+        <a href="https://github.com/xiagit000" class="iconfont icon-github" title="github"></a>
+        <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    </div><div class="copyright">
+
+  <span class="copyright-year">&copy;2019 - 2021<span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">夏鹏</span>
+  </span>
+</div>
+</footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div><script type="text/javascript">
+	(function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+  </script><script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/lib/pjax/jquery.pjax.min.js"></script>
+  <script type="text/javascript" src="/lib/nprogress/nprogress.min.js"></script>
+  <script type="text/javascript" src="/js/src/even.js?v=2.11.0"></script>
+</body>
+</html>
