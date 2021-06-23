@@ -6,9 +6,7 @@ tags:
 - spring
 - restdocs
 categories:
-- java
 - spring
-- restdocs
 ---
 # 前言
 本文旨在介绍Spring restdocs的相关用法，在这之前需要对restful有比较全面的了解，哪怕仅仅只是概念上的，所以接下来在介绍restdocs的使用方法前，得先简单的概述下restful相关的知识。
@@ -60,7 +58,7 @@ Host: example.ycb.com
         "href" : http://example.ycb.com/posts/1,
         "method" : "GET"
     }
-] 
+]
 ```
 上面的例子中，每一个在links中的link都包含了三部分：
 
