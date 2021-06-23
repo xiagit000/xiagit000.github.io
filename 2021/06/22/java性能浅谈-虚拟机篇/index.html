@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang>
+  <head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="description" content="java性能浅谈-虚拟机篇"><meta name="keywords" content="java spring 分布式 php 程序员"><link rel="alternate" href="/atom.xml" title="Roc's Blog"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.11.0">
+<link rel="canonical" href="https://wsznd.com/2021/06/22/java性能浅谈-虚拟机篇/">
+
+<link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css"><link rel="stylesheet" type="text/css" href="/lib/nprogress/nprogress.min.css">
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.11.0">
+
+<script id="baidu_analytics">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?c8c1c6553dff0eca2d97668e1f454b81";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script><script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<script>
+  window.config = {"leancloud":{"app_id":null,"app_key":null},"toc":true,"fancybox":true,"pjax":true,"latex":false};
+</script>
+
+    <title>java性能浅谈-虚拟机篇 - Roc's Blog</title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">Roc's Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list"><a href="/">
+        <li class="mobile-menu-item">首页
+          </li>
+      </a><a href="/archives/">
+        <li class="mobile-menu-item">归档
+          </li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签
+          </li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类
+          </li>
+      </a></ul>
+</nav>
+<div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">Roc's Blog</a>
+</div>
+
+<nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item">
+          <a class="menu-item-link" href="/">
+            首页
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            归档
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/tags/">
+            标签
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/categories/">
+            分类
+            </a>
+        </li>
+      </ul></nav>
+</header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content"><article class="post">
+    <header class="post-header">
+      <h1 class="post-title">java性能浅谈-虚拟机篇
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2021-06-22
+        </span><span class="post-category">
+            <a href="/categories/java/">java</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#前言"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#JVM虚拟机基础知识"><span class="toc-text">JVM虚拟机基础知识</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#运行时的数据区域"><span class="toc-text">运行时的数据区域</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#对象访问"><span class="toc-text">对象访问</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#对象初始化时发生了什么"><span class="toc-text">对象初始化时发生了什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#访问对象是如何进行的"><span class="toc-text">访问对象是如何进行的</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#常见的内存异常（OutOfMemoryError）"><span class="toc-text">常见的内存异常（OutOfMemoryError）</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#内存分配与垃圾回收策略"><span class="toc-text">内存分配与垃圾回收策略</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#内存回收区域"><span class="toc-text">内存回收区域</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#对象优先在Eden（新生代）分配"><span class="toc-text">对象优先在Eden（新生代）分配</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#大对象直接进入老年代"><span class="toc-text">大对象直接进入老年代</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#长期存活的对象进入老年代"><span class="toc-text">长期存活的对象进入老年代</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#场景探讨"><span class="toc-text">场景探讨</span></a></li></ol>
+    </div>
+  </div><div class="post-content"><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>关于java的性能问题，涵盖的面相当广泛，从本地程序到web、分布式、大数据都有很多方面值得注意和推敲，本次仅结合java虚拟机相关的基础知识探讨下平时开发和部署过程中遇到的问题和需要注意的细节点。</p>
+<p>对于Java程序员来说， 在虚拟机的自动内存管理机制的帮助下，不再需要为每一个new操作去写配对的delete/free代码，而且不容易出现内存泄漏和内存溢出问题，看起来由虚拟机管理内存一切都很美好。不过，也正是因为Java程序员把内存控制的权力交给了Java虚拟机，一旦出现内存泄漏和溢出方面的问题， 如果不了解虚拟机是怎样使用内存的， 那排查错误将会成为一项异常艰难的工作。</p>
+<a id="more"></a>
+
+<h1 id="JVM虚拟机基础知识"><a href="#JVM虚拟机基础知识" class="headerlink" title="JVM虚拟机基础知识"></a>JVM虚拟机基础知识</h1><h2 id="运行时的数据区域"><a href="#运行时的数据区域" class="headerlink" title="运行时的数据区域"></a>运行时的数据区域</h2><p>Java虚拟机在执行Java程序的过程中会把它所管理的内存划分为若干个不同的数据区域。 这些区域都有各自的用途， 以及创建和销毁的时间，有的区域随着虚拟机进程的启动而存在， 有些区域则是依赖用户线程的启动和结束而建立和销毁。</p>
+<img src="/2021/06/22/java性能浅谈-虚拟机篇/1.png">
+
+<blockquote>
+<p><strong>方法区</strong>：为了便于理解可以简单地认为它就是存放静态数据的位置，也就是所谓的永久代，但是实际上<br>这个区域是虚拟机规范最为宽松的位置，可以有各种实现，甚至不实现而使用直接内存，进入该区域的<br>数据也并不是真的永久存在，gc在该区域发生的很少，常量池回收和类型卸载依然会存在。  </p>
+</blockquote>
+<blockquote>
+<p><strong>虚拟机栈(stack)</strong>：它所描述的内存模型：每个方法被执行的时候都会同时创建一个栈帧用于存储局部变量表、操作栈、动态链接、方法出口等信息。每一个方法被调用直至执行完成的过程，就对应着一个栈帧在虚拟机栈中从入栈到出栈的过程。<br>简单来讲，对应到web应用就是处理用户请求的线程区域，他是线程私有的。</p>
+</blockquote>
+<blockquote>
+<p>本地方法栈：与虚拟机栈原理一样，区别在于它为java本地库的执行服务。</p>
+</blockquote>
+<blockquote>
+<p><strong>堆（heap）</strong>：它和虚拟机栈一样，使我们在开发中经常会遇到的字眼，也是内存异常最多的区域之一。它简单的理解就是存放对象实例，它是被所有线程共享的，垃圾回收的主要区域也在这里。</p>
+</blockquote>
+<blockquote>
+<p>程序计数器：它的作用可以看做是当前线程所执行的字节码的行号指示器。在虚拟机的概念模型里，字节码解释器工作时就是通过改变这个计数器的值来选取下一条需要执行的字节码指令，分支、循环、跳转、异常处理、线程恢复等基础功能都需要依赖这个计数器来完成。简单理解一句话，控制代码的运行逻辑。这也是jvm运行区域里面唯一不存在内存泄漏情况的区域，平时开发过程中基本不需要关注。</p>
+</blockquote>
+<p>结合上面的简单介绍，我们现在大致应该清楚jvm里面三个最为重要的内存区域就是java栈，java堆和方法区，后面所有的分享将会围绕这三个重点区域展开。</p>
+<h1 id="对象访问"><a href="#对象访问" class="headerlink" title="对象访问"></a>对象访问</h1><p>接下来看下我们最为常见的新建对象及对象的访问在虚拟机都发生了什么。</p>
+<h2 id="对象初始化时发生了什么"><a href="#对象初始化时发生了什么" class="headerlink" title="对象初始化时发生了什么"></a>对象初始化时发生了什么</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Object obj = <span class="keyword">new</span> Object();</span><br></pre></td></tr></table></figure>
+
+<p>如果这句代码出现在方法体中，“Object obj”这部分的语义会反映到java栈的变量表中，作为一个引用（Reference）类型数据出现，而“new Object()”这部分的语义将会反映到java堆中，形成一块存储Object类型所有实例数据值的结构化内存，此外java堆必须包含能查到此对象类型数据的地址信息。</p>
+<h2 id="访问对象是如何进行的"><a href="#访问对象是如何进行的" class="headerlink" title="访问对象是如何进行的"></a>访问对象是如何进行的</h2><p>由于引用（reference）类型在jvm里面只是一种规范，至于这个引用怎么实现，不同的虚拟机会有不同的实现方式，比较主流的有两种：句柄和直接指针。</p>
+<ul>
+<li>如果使用句柄的方式访问，java堆中将会划分中一块内存在作为句柄池，引用中存储的就是对象的句柄地址，二局并重包含了该对象所有数据的地址信息。</li>
+</ul>
+<img src="/2021/06/22/java性能浅谈-虚拟机篇/2.png">
+
+<ul>
+<li>如果使用直接指针进行访问，java堆对象的的布局就得考虑如何把需要访问的类型数据放置好，引用中存储的就是对象的句柄存储的就是对象的地址。</li>
+</ul>
+<img src="/2021/06/22/java性能浅谈-虚拟机篇/3.png">
+
+<p>综上，这两种方式各有优劣，句柄访问最大的好处就是变量表存储的是稳定的句柄地址，对象被移动时只会改变句柄中实例数据指针，而栈里面的引用本身是不需要被修改的。</p>
+<p>而指针访问最大的好处就是快，节省了一次指针定位的开销，对象的访问在java中是非常频繁的，这在性能提升方面是非常具有优势的。</p>
+<h1 id="常见的内存异常（OutOfMemoryError）"><a href="#常见的内存异常（OutOfMemoryError）" class="headerlink" title="常见的内存异常（OutOfMemoryError）"></a>常见的内存异常（OutOfMemoryError）</h1><ul>
+<li>OutOfMemoryError: java heap space…</li>
+<li>StackOverflowError</li>
+<li>OutOfMemoryError: new native thread</li>
+<li>OutOfMemoryError: PermGen space</li>
+</ul>
+<p>java堆溢出（OutOfMemoryError: java heap space…）<br>实例代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 堆溢出</span></span><br><span class="line"><span class="comment"> * VM Args：- Xms20m -Xmx20m -XX:+ HeapDumpOnOutOfMemoryError</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HeapOOM</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">exec</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        List list = <span class="keyword">new</span> ArrayList();</span><br><span class="line">        <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">            list.add(<span class="keyword">new</span> Object());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        exec();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>java栈及本地方法栈溢出（StackOverflowError），如果线程请求的栈深度大于虚拟机所允许的最大深度，将抛出该异常，单个线程下，无论是栈帧太大还是栈容量太小（Xss）,当内存无法分配的时候，虚拟机都是抛出StackOverflowError的异常。<br>示例代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 栈帧溢出</span></span><br><span class="line"><span class="comment"> * VM Args: -Xss160k</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">exec</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    exec();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    StackLeak sl = <span class="keyword">new</span> StackLeak();</span><br><span class="line">    sl.exec();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>创建多线程导致内存溢出（OutOfMemoryError: new native thread），一般情况下，给每个线程的栈分配的内存越大，当线程数增多的时候越容易产生内存溢出的异常<br>示例代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 线程内存溢出</span></span><br><span class="line"><span class="comment"> * VM Args: -Xss160k</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StackOOM</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">noStop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Thread.sleep(<span class="number">30000</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">exec</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">            Thread thread = <span class="keyword">new</span> Thread(() -&gt; noStop());</span><br><span class="line">            thread.start();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        StackOOM so = <span class="keyword">new</span> StackOOM();</span><br><span class="line">        so.exec();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行时常量池溢出（OutOfMemoryError: PermGen space），如果要向运行时的常量池中添加内容，最简单的做法就是使用String.intern()这个Native方法。该方法的作用是：如果翅中已经包含一个等于此对象的字符串，则返回这个对象，否则，将该对象添加到常量池中。<br>示例代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">String str = <span class="string">"sss"</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 常量池内存溢出</span></span><br><span class="line"><span class="comment"> * VM Args：- XX: PermSize= 10M -XX: MaxPermSize= 10M (java1.7及以下版本)</span></span><br><span class="line"><span class="comment"> * VM Args: -XX:MetaspaceSize=10M -XX:MaxMetaspaceSize=10M （java1.8及以上版本）</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">exec</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    List&lt;String&gt; list = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">        str = str + str;</span><br><span class="line">        list.add(str.intern());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    ConstantPoolOOM cp = <span class="keyword">new</span> ConstantPoolOOM();</span><br><span class="line">    cp.exec();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="内存分配与垃圾回收策略"><a href="#内存分配与垃圾回收策略" class="headerlink" title="内存分配与垃圾回收策略"></a>内存分配与垃圾回收策略</h1><p>垃圾回收的算法其实有很多种，譬如常见的引用计数算法和跟搜索算法，感兴趣的朋友可以自行了解，这里不做展开。这里主要强调作为开发者必须要了解的垃圾回收机制及相应的规则。</p>
+<h2 id="内存回收区域"><a href="#内存回收区域" class="headerlink" title="内存回收区域"></a>内存回收区域</h2><p>内存回收区域大致分为新生代（包含eden和survivor）区域和老年代区域，对应的回收分别为minor GC和major GC（full GC）,分别对应的含义：</p>
+<ul>
+<li>Eden，新生对象内存分配的区域</li>
+<li>survivor，可以理解为缓冲区，避免内存大量涌入老年代，导致full GC</li>
+<li>old， 长时间存活的对象及大文件连续内存存放的区域</li>
+</ul>
+<p>先来看一段代码，加深理解：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> _1MB = <span class="number">1024</span> * <span class="number">1024</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/** * VM 参数：- verbose: gc -Xms20M -Xmx20M -Xmn10M -XX: SurvivorRatio= 8 */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">exec</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">byte</span>[] a1, a2, a3, a4;</span><br><span class="line">  a1 = <span class="keyword">new</span> <span class="keyword">byte</span>[ <span class="number">2</span> * _1MB];</span><br><span class="line">  a2 = <span class="keyword">new</span> <span class="keyword">byte</span>[ <span class="number">2</span> * _1MB];</span><br><span class="line">  a3 = <span class="keyword">new</span> <span class="keyword">byte</span>[ <span class="number">2</span> * _1MB];</span><br><span class="line">  a4 = <span class="keyword">new</span> <span class="keyword">byte</span>[ <span class="number">5</span> * _1MB];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="对象优先在Eden（新生代）分配"><a href="#对象优先在Eden（新生代）分配" class="headerlink" title="对象优先在Eden（新生代）分配"></a>对象优先在Eden（新生代）分配</h2><p>大多数情况下，对象在新生代Eden区中分配。 当Eden区没有足够的空间进行分配时， 虚拟机 将发起一次Minor GC，也就是回收新生代的内存。</p>
+<p>虚拟机提供了-XX: +PrintGCDetails收集器日志参数，可以打印回收日志。</p>
+<h2 id="大对象直接进入老年代"><a href="#大对象直接进入老年代" class="headerlink" title="大对象直接进入老年代"></a>大对象直接进入老年代</h2><p>所谓的大对象就是指需要大量连续内存空间的java对象，大量的生存周期很短的大对象进入内存，会导致内存空间足够的情况下，频繁触发垃圾回收。</p>
+<p>虚拟机提供了一个-XX:PretenureSIzeThreshold参数可以让大于这个设置值的对象直接在老年代分配，这样是为了避免在Eden和Survivor区域出现大量且频繁的内存拷贝</p>
+<h2 id="长期存活的对象进入老年代"><a href="#长期存活的对象进入老年代" class="headerlink" title="长期存活的对象进入老年代"></a>长期存活的对象进入老年代</h2><p>这个顾名思义，比较好理解，内存分代收集进行管理，目的也在于此。参数MaxTenuringThreshold可以用来设置新生代经历多少次Minor GC才能够被转移到老年代</p>
+<p><strong>更加进阶的概念包括动态对象年龄判定，空间分配担保这里就留给大家自行研究理解</strong></p>
+<h1 id="场景探讨"><a href="#场景探讨" class="headerlink" title="场景探讨"></a>场景探讨</h1><ol>
+<li>系统导入大文件时频繁出现系统卡死无响应甚至崩溃的原因分析。</li>
+<li>服务器不定时发生内存溢出，但是java堆日志和虚拟机监控均发现不了任何问题。</li>
+<li>服务器虚拟机进程自动关闭，且报出SocketException: Connection reset的异常。</li>
+</ol>
+
+      </div>
+      
+      <footer class="post-footer">
+        <div class="post-tags">
+            <a href="/tags/java/">java</a>
+            <a href="/tags/性能/">性能</a>
+            </div>
+        
+        <nav class="post-nav"><a class="next" href="/2019/08/12/spring-restdocs使用指南/">
+        <span class="next-text nav-default">Spring Restdocs使用指南</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav></footer>
+    </article></div><div class="comments" id="comments"><div id="lv-container" data-id="city" data-uid="MTAyMC80NTIyNS8yMTc0MA==">
+        <noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+      </div>  
+    </div></div>
+      </main>
+
+      <footer id="footer" class="footer"><div class="social-links"><a href="mailto:411602796@qq.com" class="iconfont icon-email" title="email"></a>
+        <a href="/xiagg000@gmail.com" class="iconfont icon-google" title="google"></a>
+        <a href="https://github.com/xiagit000" class="iconfont icon-github" title="github"></a>
+        <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    </div><div class="copyright">
+
+  <span class="copyright-year">&copy;2019 - 2021<span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">夏鹏</span>
+  </span>
+</div>
+</footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div><script type="text/javascript">
+	(function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+  </script><script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/lib/pjax/jquery.pjax.min.js"></script>
+  <script type="text/javascript" src="/lib/nprogress/nprogress.min.js"></script>
+  <script type="text/javascript" src="/js/src/even.js?v=2.11.0"></script>
+</body>
+</html>
